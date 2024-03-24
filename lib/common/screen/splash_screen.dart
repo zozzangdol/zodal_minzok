@@ -47,11 +47,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
       await storage.write(
           key: ACCESS_TOKEN_KEY, value: resp.data['accessToken']);
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => RootTab()), (route) => false);
+      await Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const RootTab()), (route) => false);
     } catch (e) {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => LoginScreen()), (route) => false);
+    await Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const LoginScreen()), (route) => false);
     }
   }
 

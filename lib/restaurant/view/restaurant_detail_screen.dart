@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:zodal_minzok/common/const/data.dart';
+import 'package:zodal_minzok/common/dio/dio.dart';
 import 'package:zodal_minzok/common/layout/default_layout.dart';
 import 'package:zodal_minzok/product/component/product_card.dart';
 import 'package:zodal_minzok/restaurant/component/restaurant_card.dart';
@@ -20,7 +21,10 @@ class RestaurantDetailScreen extends StatelessWidget {
 
   Future<RestaurantDetailModel> getRestaurantDetail() async {
     final dio = Dio();
+
+    // Interceptor 적용
     final storage = FlutterSecureStorage();
+    dio.interceptors.add(CustomInterceptor(storage: storage));
 
     final repository = RestaurantRepository(dio,  baseUrl: 'http://$ip/restaurant');
 
