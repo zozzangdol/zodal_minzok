@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zodal_minzok/common/screen/splash_screen.dart';
 import 'package:zodal_minzok/user/view/login_screen.dart';
 
 void main() {
@@ -16,7 +17,7 @@ class _APP extends StatelessWidget {
         fontFamily: 'NotoSans',
       ),
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: SplashScreen(),
     );
   }
 }
