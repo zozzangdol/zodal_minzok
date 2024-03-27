@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:zodal_minzok/common/dio/dio.dart';
 import 'package:zodal_minzok/restaurant/component/restaurant_card.dart';
 import 'package:zodal_minzok/restaurant/model/restaurant_model.dart';
+import 'package:zodal_minzok/restaurant/repository/restaurant_repository.dart';
 import 'package:zodal_minzok/restaurant/view/restaurant_detail_screen.dart';
 
 import '../../common/const/data.dart';
@@ -20,17 +22,22 @@ class RestaurantScreen extends StatefulWidget {
 class _RestaurantScreenState extends State<RestaurantScreen> {
   final storage = FlutterSecureStorage();
 
-  Future<List> paginateRestaurant() async {
+  Future<List<RestaurantModel>> paginateRestaurant() async {
     final dio = Dio();
+    
+    dio.interceptors.add(CustomInterceptor(storage: storage));
+    
+    final resp = await RestaurantRepository(dio, baseUrl: 'http://$ip/restaurant/').paginate();
 
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
+    return resp.data;
 
-    final resp = await dio.get(
-      'http://$ip/restaurant',
-      options: Options(headers: {'authorization': 'Bearer $accessToken'}),
-    );
-
-    return resp.data['data'];
+    // final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
+    // final resp = await dio.get(
+    //   'http://$ip/restaurant',
+    //   options: Options(headers: {'authorization': 'Bearer $accessToken'}),
+    // );
+    //
+    // return resp.data['data'];
   }
 
   @override
@@ -40,17 +47,17 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         padding: const EdgeInsets.symmetric(
           horizontal: 16.0,
         ),
-        child: FutureBuilder<List>(
+        child: FutureBuilder<List<RestaurantModel>>(
           future: paginateRestaurant(),
-          builder: (context, AsyncSnapshot<List> snapshot) {
+          builder: (context, AsyncSnapshot<List<RestaurantModel>> snapshot) {
             if (!snapshot.hasData) {
               return CircularProgressIndicator();
             }
 
             return ListView.separated(
                 itemBuilder: (_, index) {
-                  final item = snapshot.data![index];
-                  final pItem = RestaurantModel.fromJson(item);
+                  // final item = snapshot.data![index]; // respository에서 바로 매핑
+                  final pItem = snapshot.data![index];
 
                   return GestureDetector(
                       onTap: () {
