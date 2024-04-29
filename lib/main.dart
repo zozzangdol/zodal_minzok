@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zodal_minzok/common/screen/splash_screen.dart';
 import 'package:zodal_minzok/user/view/login_screen.dart';
 
 void main() {
-  runApp(_APP());
+  runApp(ProviderScope(child: _APP()));
 }
 
 

@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:zodal_minzok/common/dio/dio.dart';
+import 'package:zodal_minzok/common/model/cursor_pagination_model.dart';
 import 'package:zodal_minzok/restaurant/component/restaurant_card.dart';
 import 'package:zodal_minzok/restaurant/model/restaurant_model.dart';
 import 'package:zodal_minzok/restaurant/repository/restaurant_repository.dart';
@@ -12,21 +14,18 @@ import '../../common/const/data.dart';
 // @author zosu
 // @since 2024-03-24
 // @comment 가게 리스트
-class RestaurantScreen extends StatefulWidget {
+class RestaurantScreen extends ConsumerStatefulWidget {
   const RestaurantScreen({super.key});
 
   @override
   _RestaurantScreenState createState() => _RestaurantScreenState();
 }
 
-class _RestaurantScreenState extends State<RestaurantScreen> {
-  final storage = FlutterSecureStorage();
+class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
 
   Future<List<RestaurantModel>> paginateRestaurant() async {
-    final dio = Dio();
-    
-    dio.interceptors.add(CustomInterceptor(storage: storage));
-    
+    final dio = ref.read(dioProvider);
+
     final resp = await RestaurantRepository(dio, baseUrl: 'http://$ip/restaurant/').paginate();
 
     return resp.data;
@@ -47,9 +46,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         padding: const EdgeInsets.symmetric(
           horizontal: 16.0,
         ),
-        child: FutureBuilder<List<RestaurantModel>>(
-          future: paginateRestaurant(),
-          builder: (context, AsyncSnapshot<List<RestaurantModel>> snapshot) {
+        child: FutureBuilder<CursorPagination<RestaurantModel>>(
+          future: ref.watch(restaurantRepositoryProvider).paginate(),
+          builder: (context, AsyncSnapshot<CursorPagination<RestaurantModel>> snapshot) {
             if (!snapshot.hasData) {
               return CircularProgressIndicator();
             }
@@ -57,7 +56,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
             return ListView.separated(
                 itemBuilder: (_, index) {
                   // final item = snapshot.data![index]; // respository에서 바로 매핑
-                  final pItem = snapshot.data![index];
+                  final pItem = snapshot.data!.data[index];
 
                   return GestureDetector(
                       onTap: () {
@@ -73,7 +72,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                     height: 16.0,
                   );
                 },
-                itemCount: snapshot.data!.length);
+                itemCount: snapshot.data!.data.length);
           },
         ),
       ),

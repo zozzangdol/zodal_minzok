@@ -2,24 +2,26 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:zodal_minzok/common/component/custom_text_form_field.dart';
 import 'package:zodal_minzok/common/const/data.dart';
 import 'package:zodal_minzok/common/layout/default_layout.dart';
 import 'package:zodal_minzok/common/screen/root_tab.dart';
+import 'package:zodal_minzok/common/security_storage/security_storage.dart';
 
 /// @author zosu
 /// @since 2024-03-20
 /// @comment 로그인 화면
 ///
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   String username = '';
   String password = '';
   @override
@@ -88,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   final refreshToken = resp.data['refreshToken'];
                   final accessToken = resp.data['accessToken'];
 
-                  final storage = FlutterSecureStorage();
+                  final storage = ref.read(secureStorageProvider);
 
                   await storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
                   await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);

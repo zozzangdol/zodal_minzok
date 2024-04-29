@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:zodal_minzok/common/const/data.dart';
 import 'package:zodal_minzok/common/dio/dio.dart';
@@ -14,42 +15,13 @@ import '../model/restaurant_detail_model.dart';
 // @since 2024-03-24
 // @comment 가게 상세 화면
 
-class RestaurantDetailScreen extends StatelessWidget {
+class RestaurantDetailScreen extends ConsumerWidget {
   const RestaurantDetailScreen({super.key, required this.id});
 
   final String id;
 
-  Future<RestaurantDetailModel> getRestaurantDetail() async {
-    final dio = Dio();
-
-    // Interceptor 적용
-    final storage = FlutterSecureStorage();
-    dio.interceptors.add(CustomInterceptor(storage: storage));
-
-    final repository = RestaurantRepository(dio,  baseUrl: 'http://$ip/restaurant');
-
-    return repository.getRestaurantDetail(id: id);
-  }
-
-  // 2024-03-34 Repository에서 바로 호출로 변경
-  // Future<Map<String, dynamic>> getRestaurantDetail() async {
-  //   final dio = Dio();
-  //   final storage = FlutterSecureStorage();
-  //
-  //   final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
-  //   final resp = await dio.get(
-  //     'http://$ip/restaurant/$id',
-  //     options: Options(
-  //       headers: {
-  //         'authorization' : 'Bearer $accessToken'
-  //       }
-  //     ),
-  //   );
-  //   return resp.data;
-  // }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DefaultScreen(
       title: '불타는 떡볶이',
       child: FutureBuilder<RestaurantDetailModel>(
@@ -69,7 +41,7 @@ class RestaurantDetailScreen extends StatelessWidget {
             ],
           );
         },
-        future: getRestaurantDetail(),
+        future: ref.watch(restaurantRepositoryProvider).getRestaurantDetail(id: id),
       ),
     );
   }
