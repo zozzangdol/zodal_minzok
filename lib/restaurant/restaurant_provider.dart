@@ -23,8 +23,8 @@ class RestaurantStateNotifier extends StateNotifier<List<RestaurantModel>> {
   }
 
   paginate() async {
-    final data = await repository.paginate();
+    final resp = await repository.paginate();
 
-    state = data.data;
+    state = resp.data;
   }
 }
