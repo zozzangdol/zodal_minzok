@@ -30,11 +30,14 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
 
     final data = ref.watch(restaurantStateNotifierProvider);
 
-    if(data.length == 0) {
+    if(data is CursorPaginationLoading) {
       return Center(
         child: CircularProgressIndicator(),
       );
     }
+
+    // 임시
+    final cp = data as CursorPagination;
 
     return Center(
       child: Padding(
@@ -44,7 +47,7 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
         child: ListView.separated(
             itemBuilder: (_, index) {
               // final item = snapshot.data![index]; // respository에서 바로 매핑
-              final pItem = data[index];
+              final pItem = cp.data[index];
 
               return GestureDetector(
                   onTap: () {
@@ -60,7 +63,7 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
                 height: 16.0,
               );
             },
-            itemCount: data.length),
+            itemCount: cp.data.length),
       ),
     );
   }

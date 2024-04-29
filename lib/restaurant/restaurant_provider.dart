@@ -8,23 +8,22 @@ import 'package:zodal_minzok/restaurant/repository/restaurant_repository.dart';
 // @comment RestaurantStateNotifier
 
 final restaurantStateNotifierProvider = StateNotifierProvider<
-    RestaurantStateNotifier,
-    List<RestaurantModel>>((ref) {
+    RestaurantStateNotifier,CursorPaginationBase>((ref) {
   final repository = ref.watch(restaurantRepositoryProvider);
   final notifier = RestaurantStateNotifier(repository: repository);
   return notifier;
 });
 
-class RestaurantStateNotifier extends StateNotifier<List<RestaurantModel>> {
+class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
   final RestaurantRepository repository;
 
-  RestaurantStateNotifier({required this.repository}) : super([]) {
+  RestaurantStateNotifier({required this.repository}) : super(CursorPaginationLoading()) {
     paginate();
   }
 
   paginate() async {
     final resp = await repository.paginate();
 
-    state = resp.data;
+    state = resp;
   }
 }
