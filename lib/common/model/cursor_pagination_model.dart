@@ -2,22 +2,17 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'cursor_pagination_model.g.dart';
 
-
-
-
 abstract class CursorPaginationBase {}
 
 // 에러가 발생 했을 때
 class CursorPaginationError extends CursorPaginationBase {
   final String error;
 
-  CursorPaginationError({
-    required this.error
-  });
+  CursorPaginationError({required this.error});
 }
 
 // 로딩중일 때
-class CursorPaginationLoading extends CursorPaginationBase{}
+class CursorPaginationLoading extends CursorPaginationBase {}
 
 // @author zosu
 // @since 2024-03-27
@@ -25,31 +20,36 @@ class CursorPaginationLoading extends CursorPaginationBase{}
 @JsonSerializable(
   genericArgumentFactories: true,
 )
-class CursorPagination<T> extends CursorPaginationBase{
-  CursorPagination({
-    required this.meta,
-    required this.data
-});
+class CursorPagination<T> extends CursorPaginationBase {
+  CursorPagination({required this.meta, required this.data});
 
-  factory CursorPagination.fromJson(Map<String, dynamic> json, T Function(Object? json) fromJsonT)
-  => _$CursorPaginationFromJson(json, fromJsonT);
+  CursorPagination<T> copyWith({CursorPaginationMeta? meta, List<T>? data}) {
+    return CursorPagination(meta: meta ?? this.meta, data: data ?? this.data);
+  }
+
+  factory CursorPagination.fromJson(
+          Map<String, dynamic> json, T Function(Object? json) fromJsonT) =>
+      _$CursorPaginationFromJson(json, fromJsonT);
 
   final CursorPaginationMeta meta;
   final List<T> data;
-
 }
 
 @JsonSerializable()
 class CursorPaginationMeta {
   CursorPaginationMeta({required this.count, required this.hasMore});
-  
-  factory CursorPaginationMeta.fromJson(Map<String, dynamic> json)
-  => _$CursorPaginationMetaFromJson(json);
-  
+
+  CursorPaginationMeta copyWith({int? count, bool? hasMore}) {
+    return CursorPaginationMeta(
+        count: count ?? this.count, hasMore: hasMore ?? this.hasMore);
+  }
+
+  factory CursorPaginationMeta.fromJson(Map<String, dynamic> json) =>
+      _$CursorPaginationMetaFromJson(json);
+
   final int count;
   final bool hasMore;
 }
-
 
 // 새로고침
 class CursorPaginationRefetching extends CursorPagination {
