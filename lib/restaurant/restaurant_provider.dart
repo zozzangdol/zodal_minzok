@@ -8,6 +8,21 @@ import 'package:zodal_minzok/restaurant/repository/restaurant_repository.dart';
 // @since 2024-04-29
 // @comment RestaurantStateNotifier
 
+// @author zosu
+// @since 2024-06-22
+// @comment Restaurant Detail Screen에서 보여질 데이터 중 Restaurant Screen과 동일한 데이터 
+final restaurantDetailProvider =
+    Provider.family<RestaurantModel?, String>((ref, id) {
+      
+      final state = ref.watch(restaurantStateNotifierProvider);
+      
+      if(state is! CursorPagination){
+        return null;
+      }
+      
+      return state.data.firstWhere((element) => element.id == id);
+    });
+
 final restaurantStateNotifierProvider =
     StateNotifierProvider<RestaurantStateNotifier, CursorPaginationBase>((ref) {
   final repository = ref.watch(restaurantRepositoryProvider);
@@ -23,7 +38,7 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
     paginate();
   }
 
-  void paginate({
+  Future<void> paginate({
     int fetchCount = 20,
     bool fetchMore = false, // true: 추가로 데이터 조회 (무조건 기존 데이터 존재)
     bool forceRefetch = false, // true : 강제로 로딩
@@ -103,7 +118,7 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
 
       // paginate 호출 후
       if (state is CursorPaginationFetchingMore) {
-
+        print('여기 안오니?');
         final pState = state as CursorPaginationFetchingMore;
 
         // meta는 resp에서 받은 것이 최신이므로 그대로 두고, data만 추가 업데이트
@@ -111,7 +126,6 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
           ...pState.data, // 기존 데이터
           ...resp.data, // 추가로 조회해온 데이터
         ]);
-
       } else {
         // refetching 또는 Loading인 경우
         // 추가가 아닌 데이터 쌔삥이 들어가므로 바로 state
@@ -120,5 +134,30 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
     } catch (e) {
       state = CursorPaginationError(error: '데이터 조회 실패~');
     }
+  }
+
+  // @author zosu
+  // @since 2024-06-22
+  // @comment ReastaurantDetail 캐시처리
+  void getDetail(String id) async {
+
+    if(state is! CursorPagination) {
+      // 데이터가 없는 상태 -> 가져오는 시도
+      await this.paginate();
+    }
+
+    if(state is! CursorPagination) {
+      // 요청을 했음에도 불구하고 데이터 없을 시
+      return;
+    }
+
+    final pState = state as CursorPagination<RestaurantModel>;
+
+    final resp = await repository.getRestaurantDetail(id: id);
+
+    // 가져온 Detail Data로 교체
+    state = pState.copyWith(
+      data: pState.data.map((e) => e.id == id ? resp : e ).toList(),
+    );
   }
 }

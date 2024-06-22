@@ -5,9 +5,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:zodal_minzok/common/const/data.dart';
 import 'package:zodal_minzok/common/dio/dio.dart';
 import 'package:zodal_minzok/common/layout/default_layout.dart';
+import 'package:zodal_minzok/common/model/cursor_pagination_model.dart';
 import 'package:zodal_minzok/product/component/product_card.dart';
 import 'package:zodal_minzok/restaurant/component/restaurant_card.dart';
+import 'package:zodal_minzok/restaurant/model/restaurant_model.dart';
 import 'package:zodal_minzok/restaurant/repository/restaurant_repository.dart';
+import 'package:zodal_minzok/restaurant/restaurant_provider.dart';
 
 import '../model/restaurant_detail_model.dart';
 
@@ -15,38 +18,53 @@ import '../model/restaurant_detail_model.dart';
 // @since 2024-03-24
 // @comment 가게 상세 화면
 
-class RestaurantDetailScreen extends ConsumerWidget {
+class RestaurantDetailScreen extends ConsumerStatefulWidget {
   const RestaurantDetailScreen({super.key, required this.id});
 
   final String id;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RestaurantDetailScreen> createState() => _RestaurantDetailScreenState();
+}
+
+class _RestaurantDetailScreenState extends ConsumerState<RestaurantDetailScreen> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // Detail 가져오기
+    ref.read(restaurantStateNotifierProvider.notifier).getDetail(widget.id);
+  }
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(restaurantDetailProvider(widget.id));
+
+    if (state == null) {
+      return const DefaultScreen(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+
     return DefaultScreen(
       title: '불타는 떡볶이',
-      child: FutureBuilder<RestaurantDetailModel>(
-        builder: (_, AsyncSnapshot<RestaurantDetailModel> snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          // final item = RestaurantDetailModel.fromJson(snapshot.data!);
-          // 2024-03-24 repository에서 이미 Model Mapping이 완료 => 바로 snapshot.data 사용 가능
-
-          return CustomScrollView(
-            slivers: [
-              renderTop(model: snapshot.data!),
-              renderLabel(),
-              renderProduct(products: snapshot.data!.products),
-            ],
-          );
-        },
-        future: ref.watch(restaurantRepositoryProvider).getRestaurantDetail(id: id),
+      child: CustomScrollView(
+        slivers: [
+          renderTop(model: state),
+          if(state is RestaurantDetailModel)
+            renderLabel(),
+          if(state is RestaurantDetailModel)
+           renderProduct(products: state.products),
+        ],
       ),
     );
   }
 
-  SliverToBoxAdapter renderTop({required RestaurantDetailModel model}) {
+  SliverToBoxAdapter renderTop({required RestaurantModel model}) {
     return SliverToBoxAdapter(
       child: RestaurantCard.fromModel(
         model: model,

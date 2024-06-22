@@ -30,21 +30,6 @@ class RestaurantModel {
   factory RestaurantModel.fromJson(Map<String, dynamic> json)
   => _$RestaurantModelFromJson(json);
 
-  // 2024-03-24 json_serializable 대체
-  // factory RestaurantModel.fromJson({
-  //   required Map<String, dynamic> json
-  // }) {
-  //   return RestaurantModel(id: json['id'],
-  //       name: json['name'],
-  //       thumbUrl: 'http://$ip${json['thumbUrl']}',
-  //       tags: List<String>.from(json['tags']),
-  //       priceRange: RestaurantPriceRange.values.firstWhere((element) => element
-  //           .name == json['priceRange']),
-  //       ratings: json['ratings'],
-  //       ratingsCount: json['ratingsCount'],
-  //       deliveryTime: json['deliveryTime'],
-  //       deliveryFee: json['deliveryFee']);
-  // }
   final String id;
   final String name;
   @JsonKey(
