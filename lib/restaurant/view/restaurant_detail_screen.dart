@@ -1,12 +1,16 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:skeletons/skeletons.dart';
 import 'package:zodal_minzok/common/const/data.dart';
 import 'package:zodal_minzok/common/dio/dio.dart';
 import 'package:zodal_minzok/common/layout/default_layout.dart';
 import 'package:zodal_minzok/common/model/cursor_pagination_model.dart';
 import 'package:zodal_minzok/product/component/product_card.dart';
+import 'package:zodal_minzok/rating/component/rating_card.dart';
 import 'package:zodal_minzok/restaurant/component/restaurant_card.dart';
 import 'package:zodal_minzok/restaurant/model/restaurant_model.dart';
 import 'package:zodal_minzok/restaurant/repository/restaurant_repository.dart';
@@ -24,11 +28,12 @@ class RestaurantDetailScreen extends ConsumerStatefulWidget {
   final String id;
 
   @override
-  ConsumerState<RestaurantDetailScreen> createState() => _RestaurantDetailScreenState();
+  ConsumerState<RestaurantDetailScreen> createState() =>
+      _RestaurantDetailScreenState();
 }
 
-class _RestaurantDetailScreenState extends ConsumerState<RestaurantDetailScreen> {
-
+class _RestaurantDetailScreenState
+    extends ConsumerState<RestaurantDetailScreen> {
   @override
   void initState() {
     // TODO: implement initState
@@ -37,6 +42,7 @@ class _RestaurantDetailScreenState extends ConsumerState<RestaurantDetailScreen>
     // Detail 가져오기
     ref.read(restaurantStateNotifierProvider.notifier).getDetail(widget.id);
   }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(restaurantDetailProvider(widget.id));
@@ -49,7 +55,6 @@ class _RestaurantDetailScreenState extends ConsumerState<RestaurantDetailScreen>
       );
     }
 
-
     // test
 
     return DefaultScreen(
@@ -57,11 +62,48 @@ class _RestaurantDetailScreenState extends ConsumerState<RestaurantDetailScreen>
       child: CustomScrollView(
         slivers: [
           renderTop(model: state),
-          if(state is RestaurantDetailModel)
-            renderLabel(),
-          if(state is RestaurantDetailModel)
-           renderProduct(products: state.products),
+          if (state is! RestaurantDetailModel) renderLoading(),
+          if (state is RestaurantDetailModel) renderLabel(),
+          if (state is RestaurantDetailModel)
+            renderProduct(products: state.products),
+          SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
+            sliver: SliverToBoxAdapter(
+              child: RatingCard(
+                avatarImage: AssetImage(
+                    'asset/img/logo/codefactory_logo.png'
+                ),
+                images: [],
+                email: 'test@codefactory.ai',
+                rating: 4,
+                content: '딜리샤스',
+              ),
+            ),
+          )
         ],
+      ),
+    );
+  }
+
+  SliverPadding renderLoading() {
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 16.0,
+      ),
+      sliver: SliverList(
+        delegate: SliverChildListDelegate(List.generate(
+          3,
+          (index) => Padding(
+            padding: const EdgeInsets.only(bottom: 32.0),
+            child: SkeletonParagraph(
+              style: SkeletonParagraphStyle(
+                lines: 5,
+                padding: EdgeInsets.zero,
+              ),
+            ),
+          ),
+        )),
       ),
     );
   }
