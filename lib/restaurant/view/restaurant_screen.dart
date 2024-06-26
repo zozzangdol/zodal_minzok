@@ -7,7 +7,7 @@ import 'package:zodal_minzok/common/model/cursor_pagination_model.dart';
 import 'package:zodal_minzok/restaurant/component/restaurant_card.dart';
 import 'package:zodal_minzok/restaurant/model/restaurant_model.dart';
 import 'package:zodal_minzok/restaurant/repository/restaurant_repository.dart';
-import 'package:zodal_minzok/restaurant/restaurant_provider.dart';
+import 'package:zodal_minzok/restaurant/provider/restaurant_provider.dart';
 import 'package:zodal_minzok/restaurant/view/restaurant_detail_screen.dart';
 
 import '../../common/const/data.dart';

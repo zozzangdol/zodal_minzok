@@ -2,25 +2,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:zodal_minzok/common/const/data.dart';
+import 'package:collection/collection.dart';
 
 // @author zosu
 // @since 2024-06-24
 // @comment Detail Page 하단의 후기 카드
 
 class RatingCard extends StatelessWidget {
-  const RatingCard(
-      {required this.avatarImage,
-      required this.images,
-      required this.email,
-      required this.rating,
-      required this.content,
-      super.key});
+  const RatingCard({required this.avatarImage,
+    required this.images,
+    required this.email,
+    required this.rating,
+    required this.content,
+    super.key});
 
   // ImageProvider like networkImage, assetImage...
   final ImageProvider avatarImage;
 
   // 리뷰 사진
-  final List<String> images;
+  final List<Image> images;
 
   // 이메일
   final String email;
@@ -36,9 +36,20 @@ class RatingCard extends StatelessWidget {
     return Container(
       child: Column(
         children: [
-          _Header(avatarImage: avatarImage, email: email, rating: rating,),
-          _Body(),
-          _Images(),
+          _Header(
+            avatarImage: avatarImage,
+            email: email,
+            rating: rating,
+          ),
+          SizedBox(
+            height: 8.0,
+          ),
+          _Body(
+            content: '맛있어요',
+          ),
+          if(images.length > 0)
+          SizedBox(
+              height : 100, child: _Images(images: images,),),
         ],
       ),
     );
@@ -55,11 +66,10 @@ class _Header extends StatelessWidget {
   // 별점
   final int rating;
 
-  const _Header(
-      {required this.avatarImage,
-      required this.email,
-      required this.rating,
-      super.key});
+  const _Header({required this.avatarImage,
+    required this.email,
+    required this.rating,
+    super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +93,13 @@ class _Header extends StatelessWidget {
             ),
           ),
         ),
-        ...List.generate(5, (index) => Icon( index < rating ? Icons.star: Icons.star_border_outlined, color: PRIMARY_COLOR,))
+        ...List.generate(
+            5,
+                (index) =>
+                Icon(
+                  index < rating ? Icons.star : Icons.star_border_outlined,
+                  color: PRIMARY_COLOR,
+                ))
       ],
     );
   }
@@ -91,20 +107,46 @@ class _Header extends StatelessWidget {
 
 // Body
 class _Body extends StatelessWidget {
-  const _Body({super.key});
+  final String content;
+
+  const _Body({required this.content, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Row(
+      children: [
+        Flexible(
+          child: Text(
+            content,
+            style: TextStyle(
+              color: BODY_TEXT_COLOR,
+              fontSize: 14.0,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
 // Image
 class _Images extends StatelessWidget {
-  const _Images({super.key});
+  final List<Image> images;
+
+  const _Images({required this.images, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      children: images
+          .mapIndexed((index, element) =>
+          Padding(padding: EdgeInsets.only(
+            right: index == images.length - 1 ? 0 : 16.0,), child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0,),
+            child: element,
+          ),),)
+          .toList(),
+    );
   }
 }

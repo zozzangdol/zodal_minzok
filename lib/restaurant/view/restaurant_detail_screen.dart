@@ -14,7 +14,7 @@ import 'package:zodal_minzok/rating/component/rating_card.dart';
 import 'package:zodal_minzok/restaurant/component/restaurant_card.dart';
 import 'package:zodal_minzok/restaurant/model/restaurant_model.dart';
 import 'package:zodal_minzok/restaurant/repository/restaurant_repository.dart';
-import 'package:zodal_minzok/restaurant/restaurant_provider.dart';
+import 'package:zodal_minzok/restaurant/provider/restaurant_provider.dart';
 
 import '../model/restaurant_detail_model.dart';
 
