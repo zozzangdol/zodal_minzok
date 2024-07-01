@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:zodal_minzok/common/dio/dio.dart';
 import 'package:zodal_minzok/common/model/cursor_pagination_model.dart';
+import 'package:zodal_minzok/common/utils/data_utils.dart';
+import 'package:zodal_minzok/common/utils/pagination_utils.dart';
 import 'package:zodal_minzok/restaurant/component/restaurant_card.dart';
 import 'package:zodal_minzok/restaurant/model/restaurant_model.dart';
 import 'package:zodal_minzok/restaurant/repository/restaurant_repository.dart';
@@ -35,13 +37,9 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
   }
 
   void scrollListener() {
-    // 현재 위치가 최대 길이보다 덜 되는 위치에서 새로운 데이터를 요청
-    if (_controller.offset >= _controller.position.maxScrollExtent - 300) {
-      //pagination 로직 한번 더 확인
-      ref
-          .watch(restaurantStateNotifierProvider.notifier)
-          .paginate(fetchMore: true);
-    }
+    // 스크롤 기능 공통화
+    PaginationUtils.paginate(controller: _controller, provider: ref
+        .watch(restaurantStateNotifierProvider.notifier),);
   }
 
   @override

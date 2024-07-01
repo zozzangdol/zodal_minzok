@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:zodal_minzok/common/const/data.dart';
 import 'package:collection/collection.dart';
+import 'package:zodal_minzok/rating/model/rating_model.dart';
 
 // @author zosu
 // @since 2024-06-24
@@ -15,6 +16,19 @@ class RatingCard extends StatelessWidget {
     required this.rating,
     required this.content,
     super.key});
+
+  factory RatingCard.fromModel({
+    required RatingModel model
+}) {
+    return RatingCard(
+        avatarImage: NetworkImage(
+          model.user.imageUrl
+        ),
+        images: model.imgUrls.map((e) => Image.network(e)).toList(),
+        email: model.user.username,
+        rating: model.rating,
+        content: model.content);
+  }
 
   // ImageProvider like networkImage, assetImage...
   final ImageProvider avatarImage;
@@ -47,6 +61,7 @@ class RatingCard extends StatelessWidget {
           _Body(
             content: '맛있어요',
           ),
+          SizedBox(height: 8.0,),
           if(images.length > 0)
           SizedBox(
               height : 100, child: _Images(images: images,),),

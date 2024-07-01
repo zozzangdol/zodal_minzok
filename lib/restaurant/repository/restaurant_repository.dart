@@ -4,6 +4,7 @@ import 'package:retrofit/retrofit.dart';
 import 'package:zodal_minzok/common/const/data.dart';
 import 'package:zodal_minzok/common/dio/dio.dart';
 import 'package:zodal_minzok/common/model/pagination_params.dart';
+import 'package:zodal_minzok/common/repository/base_pagination_repository.dart';
 import 'package:zodal_minzok/restaurant/model/restaurant_detail_model.dart';
 
 import '../../common/model/cursor_pagination_model.dart';
@@ -26,7 +27,7 @@ final restaurantRepositoryProvider = Provider<RestaurantRepository>((ref) {
 // @since 2024-03-24
 // @comment Restaurant Repository
 @RestApi()
-abstract class RestaurantRepository {
+abstract class RestaurantRepository implements IBasePaginationRepository<RestaurantModel> {
   // http://$ip/restaurant
   factory RestaurantRepository(Dio dio, {String baseUrl}) =
       _RestaurantRepository;

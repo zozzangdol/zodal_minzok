@@ -5,6 +5,7 @@ import 'package:zodal_minzok/common/const/data.dart';
 import 'package:zodal_minzok/common/dio/dio.dart';
 import 'package:zodal_minzok/common/model/cursor_pagination_model.dart';
 import 'package:zodal_minzok/common/model/pagination_params.dart';
+import 'package:zodal_minzok/common/repository/base_pagination_repository.dart';
 import 'package:zodal_minzok/rating/model/rating_model.dart';
 
 // @author zosu
@@ -25,7 +26,7 @@ final restaurantRatingRepositoryProvider = Provider.family<
 });
 
 @RestApi()
-abstract class RestaurantRatingRepository {
+abstract class RestaurantRatingRepository implements IBasePaginationRepository<RatingModel>{
 
   factory RestaurantRatingRepository(Dio dio, {String baseUrl}) =
   _RestaurantRatingRepository;

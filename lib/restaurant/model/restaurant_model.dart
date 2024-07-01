@@ -3,6 +3,7 @@
 // @comment 가게 모델
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:zodal_minzok/common/model/model_with_id.dart';
 import 'package:zodal_minzok/common/utils/data_utils.dart';
 
 part 'restaurant_model.g.dart';
@@ -14,7 +15,7 @@ enum RestaurantPriceRange {
 }
 
 @JsonSerializable()
-class RestaurantModel {
+class RestaurantModel implements IModelWithId {
   RestaurantModel({
     required this.id,
     required this.name,

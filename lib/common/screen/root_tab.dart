@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zodal_minzok/common/const/data.dart';
 import 'package:zodal_minzok/common/layout/default_layout.dart';
+import 'package:zodal_minzok/product/view/product_screen.dart';
 import 'package:zodal_minzok/restaurant/view/restaurant_screen.dart';
 
 /**
@@ -75,9 +76,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin{
         controller: controller,
         children: [
           RestaurantScreen(),
-          Container(
-            child: Text('음식'),
-          ),
+          ProductScreen(),
           Container(
             child: Text('주문'),
           ),
