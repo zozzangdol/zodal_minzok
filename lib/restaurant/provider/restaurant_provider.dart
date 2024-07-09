@@ -1,11 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zodal_minzok/common/model/cursor_pagination_model.dart';
-import 'package:zodal_minzok/common/model/model_with_id.dart';
-import 'package:zodal_minzok/common/model/pagination_params.dart';
 import 'package:zodal_minzok/common/provider/pagination_provider.dart';
-import 'package:zodal_minzok/common/repository/base_pagination_repository.dart';
 import 'package:zodal_minzok/restaurant/model/restaurant_model.dart';
 import 'package:zodal_minzok/restaurant/repository/restaurant_repository.dart';
+import 'package:collection/collection.dart';
 
 // @author zosu
 // @since 2024-04-29
@@ -22,8 +20,8 @@ final restaurantDetailProvider =
       if(state is! CursorPagination){
         return null;
       }
-      
-      return state.data.firstWhere((element) => element.id == id);
+
+      return state.data.firstWhereOrNull((element) => element.id == id);
     });
 
 final restaurantStateNotifierProvider =
@@ -55,9 +53,22 @@ class RestaurantStateNotifier extends PaginationProvider<RestaurantModel, Restau
 
     final resp = await repository.getRestaurantDetail(id: id);
 
-    // 가져온 Detail Data로 교체
-    state = pState.copyWith(
-      data: pState.data.map((e) => e.id == id ? resp : e ).toList(),
-    );
+    /// 음식 탭에서 getDetail()시 매핑하려는 레스토랑 데이터가 없어서 오류 발생 처리
+
+    if(pState.data.where((element) => element.id == id).isEmpty) {
+
+      state = pState.copyWith(
+        data: <RestaurantModel>[
+          ...pState.data,
+          resp,
+        ]
+      );
+
+    } else {
+      // 가져온 Detail Data로 교체
+      state = pState.copyWith(
+        data: pState.data.map((e) => e.id == id ? resp : e ).toList(),
+      );
+    }
   }
 }

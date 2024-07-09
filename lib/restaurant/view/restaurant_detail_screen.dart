@@ -150,7 +150,7 @@ class _RestaurantDetailScreenState
             padding: EdgeInsets.only(
               top: 16.0,
             ),
-            child: ProductCard.fromModel(model: product),
+            child: ProductCard.fromRestaurantProductModel(model: product),
           );
         }, childCount: products.length),
       ),

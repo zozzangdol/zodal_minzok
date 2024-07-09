@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zodal_minzok/common/const/data.dart';
+import 'package:zodal_minzok/product/model/product_model.dart';
 import 'package:zodal_minzok/restaurant/model/restaurant_detail_model.dart';
 
 // @author zosu
@@ -16,9 +17,23 @@ class ProductCard extends StatelessWidget {
       : super(key: key);
 
   factory ProductCard.fromModel({
+    required ProductModel model,
+  }) {
+    return ProductCard(
+      image: Image.network(
+        model.imgUrl,
+        width: 110,
+        height: 110,
+        fit: BoxFit.cover,
+      ),
+      name: model.name,
+      detail: model.detail,
+      price: model.price,
+    );
+  }
+
+  factory ProductCard.fromRestaurantProductModel({
     required RestaurantProductModel model,
-    VoidCallback? onSubtract,
-    VoidCallback? onAdd,
   }) {
     return ProductCard(
       image: Image.network(
