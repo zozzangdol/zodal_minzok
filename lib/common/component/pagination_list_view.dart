@@ -5,11 +5,15 @@
 // @comment Pagination List 공통화
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:go_router/go_router.dart';
+import 'package:zodal_minzok/common/const/data.dart';
 import 'package:zodal_minzok/common/model/cursor_pagination_model.dart';
 import 'package:zodal_minzok/common/model/model_with_id.dart';
 import 'package:zodal_minzok/common/provider/pagination_provider.dart';
 import 'package:zodal_minzok/common/security_storage/security_storage.dart';
 import 'package:zodal_minzok/common/utils/pagination_utils.dart';
+import 'package:zodal_minzok/user/provider/user_me_provider.dart';
 
 
 typedef PaginationWidgetBuilder<T extends IModelWithId> = Widget Function(BuildContext context, int index, T model);
@@ -69,10 +73,13 @@ class _PaginationListViewState<T extends IModelWithId> extends ConsumerState<Pag
             height: 16.0,
           ),
           ElevatedButton(onPressed: () async{
+
+            ref.read(userMeProvider.notifier).logout();
+            // await ref.watch(secureStorageProvider).deleteAll();
             /// 에러 발생 시 다시 paginate 호출 하도록
-            ref.read(widget.provider.notifier).paginate(
-              forceRefetch: true
-            );
+            // ref.read(widget.provider.notifier).paginate(
+            //   forceRefetch: true
+            // );
           }, child: Text('다시시도'))
         ],
       );

@@ -78,6 +78,7 @@ class UserMeStateNotifier extends StateNotifier<UserModelBase?> {
   }
 
   Future<void> logout() async {
+    print('logout');
     /// 시작과 동시에 null 처리
     state = null;
 

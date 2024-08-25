@@ -15,11 +15,13 @@ class _APP extends ConsumerWidget {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
-      routerConfig: router,
       theme: ThemeData(
         fontFamily: 'NotoSans',
       ),
       debugShowCheckedModeBanner: false,
+      routerDelegate: router.routerDelegate,
+      routeInformationParser: router.routeInformationParser,
+      routeInformationProvider: router.routeInformationProvider,
     );
   }
 }

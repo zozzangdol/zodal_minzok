@@ -9,6 +9,7 @@ import 'package:zodal_minzok/common/const/data.dart';
 import 'package:zodal_minzok/common/layout/default_layout.dart';
 import 'package:zodal_minzok/common/screen/root_tab.dart';
 import 'package:zodal_minzok/common/security_storage/security_storage.dart';
+import 'package:zodal_minzok/user/provider/user_me_provider.dart';
 
 /// @author zosu
 /// @since 2024-03-20
@@ -70,36 +71,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   height: 32.0,
                 ),
                 ElevatedButton(onPressed: () async {
-                  // ID:비밀번호
-                  final rawString = '$username:$password';
-
-                  // Encoding 정의
-                  Codec<String, String> stringToBase64 = utf8.fuse(base64);
-
-                  // Encoding
-                  String token = stringToBase64.encode(rawString);
-
-                  final resp = await dio.post(
-                    'http://$ip/auth/login',
-                    options: Options(
-                      headers: {
-                        'authorization' : 'Basic $token'
-                      },
-                    )
-                  );
-
-                  final refreshToken = resp.data['refreshToken'];
-                  final accessToken = resp.data['accessToken'];
-
-                  final storage = ref.read(secureStorageProvider);
-
-                  await storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
-                  await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
-
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_)=>RootTab())
-                  );
-
+                  ref.read(userMeProvider.notifier).login(userName: username, password: password);
                 }, style:
                     ElevatedButton.styleFrom(
                       backgroundColor: PRIMARY_COLOR

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zodal_minzok/common/screen/root_tab.dart';
 import 'package:zodal_minzok/common/screen/splash_screen.dart';
+import 'package:zodal_minzok/common/security_storage/security_storage.dart';
 import 'package:zodal_minzok/restaurant/view/restaurant_detail_screen.dart';
 import 'package:zodal_minzok/user/model/user_model.dart';
 import 'package:zodal_minzok/user/provider/user_me_provider.dart';
@@ -23,10 +24,35 @@ class AuthProvider extends ChangeNotifier {
     });
   }
 
+  List<GoRoute> get routes => [
+    GoRoute(
+        path: '/', /// home
+        name: RootTab.routeName,
+        builder: (_, __) => RootTab(),
+        routes: [
+          GoRoute(
+            path: 'restaurant:rid',
+            name: RestaurantDetailScreen.routeName,
+            builder: (_, state) =>
+                RestaurantDetailScreen(id: state.pathParameters['rid']!),
+          ),
+        ]),
+    GoRoute(
+      path: '/splash',
+      name: SplashScreen.routeName,
+      builder: (_, __) => SplashScreen(),
+    ),
+    GoRoute(
+      path: '/login',
+      name: LoginScreen.routeName,
+      builder: (_, __) => LoginScreen(),
+    )
+  ];
+
   /// SplashScreen
   /// 앱을 처음 시작했을 때
   /// 토큰 존재 확인 -> 로그인 스크린 or 홈 스크린
-  String? redirectLogic(GoRouterState state) {
+  Future<String?> redirectLogic(GoRouterState state) async {
     final UserModelBase? user = ref.read(userMeProvider);
 
     /// 로그인 화면에 있는지 (로그인 중) 확인

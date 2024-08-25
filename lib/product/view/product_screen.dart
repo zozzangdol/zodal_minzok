@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zodal_minzok/common/component/pagination_list_view.dart';
 import 'package:zodal_minzok/product/component/product_card.dart';
 import 'package:zodal_minzok/product/provider/product_provider.dart';
@@ -15,8 +16,11 @@ class ProductScreen extends StatelessWidget {
         itemBuilder: <ProductModel>(_, index, model) {
           return GestureDetector(
               onTap: (){
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_)=>RestaurantDetailScreen(id: model.restaurant.id))
+                context.goNamed(
+                  RestaurantDetailScreen.routeName,
+                  pathParameters: {
+                    'rid' : model.restaurant.id,
+                  }
                 );
               },
               child: ProductCard.fromModel(model: model));
