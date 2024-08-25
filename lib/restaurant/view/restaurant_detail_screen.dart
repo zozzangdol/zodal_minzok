@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:skeletons/skeletons.dart';
 import 'package:zodal_minzok/common/const/data.dart';
 import 'package:zodal_minzok/common/layout/default_layout.dart';
@@ -15,6 +16,7 @@ import 'package:zodal_minzok/restaurant/model/restaurant_detail_model.dart';
 import 'package:zodal_minzok/restaurant/model/restaurant_model.dart';
 import 'package:zodal_minzok/restaurant/provider/restaurant_provider.dart';
 import 'package:zodal_minzok/restaurant/provider/restaurant_rating_provider.dart';
+import 'package:zodal_minzok/restaurant/view/basket_screen.dart';
 import 'package:zodal_minzok/user/provider/basket_provider.dart';
 
 import 'package:badges/badges.dart' as badges;
@@ -82,7 +84,10 @@ class _RestaurantDetailScreenState
       title: '불타는 떡볶이',
       floatingActionButton: FloatingActionButton(
         backgroundColor: PRIMARY_COLOR,
-        onPressed: (){},
+        onPressed: (){
+          /// 뒤로가기를 위해 go 대신 push
+          context.pushNamed(BasketScreen.routeName);
+        },
         child: badges.Badge(
           badgeStyle: badges.BadgeStyle(
             badgeColor: Colors.white,
