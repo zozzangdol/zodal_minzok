@@ -15,6 +15,7 @@ import 'package:zodal_minzok/user/view/login_screen.dart';
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
+  static String get routeName => 'splash';
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }

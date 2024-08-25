@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zodal_minzok/common/model/cursor_pagination_model.dart';
 import 'package:zodal_minzok/common/model/model_with_id.dart';
 import 'package:zodal_minzok/common/provider/pagination_provider.dart';
+import 'package:zodal_minzok/common/security_storage/security_storage.dart';
 import 'package:zodal_minzok/common/utils/pagination_utils.dart';
 
 
@@ -67,7 +68,7 @@ class _PaginationListViewState<T extends IModelWithId> extends ConsumerState<Pag
           const SizedBox(
             height: 16.0,
           ),
-          ElevatedButton(onPressed: (){
+          ElevatedButton(onPressed: () async{
             /// 에러 발생 시 다시 paginate 호출 하도록
             ref.read(widget.provider.notifier).paginate(
               forceRefetch: true

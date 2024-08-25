@@ -17,6 +17,7 @@ import 'package:zodal_minzok/common/security_storage/security_storage.dart';
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
+  static String get routeName => 'login';
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
