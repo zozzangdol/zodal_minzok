@@ -9,6 +9,7 @@ import 'package:zodal_minzok/common/const/data.dart';
 import 'package:zodal_minzok/common/layout/default_layout.dart';
 import 'package:zodal_minzok/common/screen/root_tab.dart';
 import 'package:zodal_minzok/common/security_storage/security_storage.dart';
+import 'package:zodal_minzok/user/model/user_model.dart';
 import 'package:zodal_minzok/user/provider/user_me_provider.dart';
 
 /// @author zosu
@@ -28,7 +29,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String password = '';
   @override
   Widget build(BuildContext context) {
-    final dio = Dio();
+
+    final state = ref.watch(userMeProvider);
     return DefaultScreen(
       child: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, // UI/UX 편의상
@@ -70,7 +72,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(
                   height: 32.0,
                 ),
-                ElevatedButton(onPressed: () async {
+                ElevatedButton(
+                  onPressed:  state is UserModelLoading
+                      ? null
+                      : () async {
                   ref.read(userMeProvider.notifier).login(userName: username, password: password);
                 }, style:
                     ElevatedButton.styleFrom(

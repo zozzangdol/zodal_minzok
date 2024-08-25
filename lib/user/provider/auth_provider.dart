@@ -82,4 +82,8 @@ class AuthProvider extends ChangeNotifier {
     /// 나머지는 원래 이동하려던 페이지로 이동
     return null;
   }
+
+  logout(){
+    ref.read(userMeProvider.notifier).logout();
+  }
 }

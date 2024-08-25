@@ -1,26 +1,28 @@
 // @author zosu
 // @since 2024-03-24
 // @comment Token 자동 관리 및 통합 관리를 위한 Interceptor
-
 import 'package:dio/dio.dart' ;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' hide Options;
 import 'package:zodal_minzok/common/const/data.dart';
 import 'package:zodal_minzok/common/security_storage/security_storage.dart';
+import 'package:zodal_minzok/user/provider/auth_provider.dart';
+import 'package:zodal_minzok/user/provider/user_me_provider.dart';
 
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio();
   final storage = ref.watch(secureStorageProvider);
 
-  dio.interceptors.add(CustomInterceptor(storage: storage));
+  dio.interceptors.add(CustomInterceptor(storage: storage, ref: ref));
 
   return dio;
 });
 class CustomInterceptor extends Interceptor {
 
   CustomInterceptor({
-    required this.storage
+    required this.storage,
+    required this.ref,
   });
 
   // 각 상태 발생 시 중간에 가로채서 처리 가능
@@ -29,6 +31,7 @@ class CustomInterceptor extends Interceptor {
   // 3. 에러가 났을 때
 
   final FlutterSecureStorage storage;
+  final Ref ref;
 
   // 1. 요청을 보낼 때
   @override
@@ -121,7 +124,19 @@ class CustomInterceptor extends Interceptor {
         return handler.resolve(response);
 
       } on DioException catch (dioError) {
+        /// refreshToken까지 만료됐을때 -> 로그아웃
 
+        /// 1번
+        /// Circular Dependency Error
+        /// A, B
+        /// A -> B 의 친구 , B -> A의 친구
+        /// 사람 : A는 B의 친구구나
+        /// 컴퓨터 : A -> B -> A -> B.....
+        /// 동시에 넣어줘야하는데 동시에 서로를 refer 하고 있음
+        /// ref.read(userMeProvider.notifier).logout();
+
+        /// 상위의 객체를 만들어주면 됨 (우회)
+        ref.read(authProvider.notifier).logout();
         return handler.reject(dioError);
       }
 
