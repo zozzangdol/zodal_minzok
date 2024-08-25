@@ -9,7 +9,10 @@ class DefaultScreen extends StatelessWidget {
   final String? title;
   final Widget? bottomNavigatorBar; // 화면에 따라 유,무가 다름
 
-  const DefaultScreen({super.key, required this.child, this.backgroundColor, this.title, this.bottomNavigatorBar});
+  /// 장바구니 버튼
+  final Widget? floatingActionButton;
+  const
+  DefaultScreen({super.key, required this.child, this.backgroundColor, this.title, this.bottomNavigatorBar, this.floatingActionButton});
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +21,7 @@ class DefaultScreen extends StatelessWidget {
       appBar: renderAppBar(),
       body: child,
       bottomNavigationBar: bottomNavigatorBar,
+      floatingActionButton: floatingActionButton,
     );
   }
 
