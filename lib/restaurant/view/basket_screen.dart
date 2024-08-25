@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zodal_minzok/common/const/data.dart';
 import 'package:zodal_minzok/common/layout/default_layout.dart';
+import 'package:zodal_minzok/order/provider/order_provider.dart';
+import 'package:zodal_minzok/order/view/order_done_screen.dart';
 import 'package:zodal_minzok/product/component/product_card.dart';
 import 'package:zodal_minzok/user/provider/basket_provider.dart';
 
@@ -112,7 +115,17 @@ class BasketScreen extends ConsumerWidget {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: PRIMARY_COLOR,
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          final result = await ref.read(orderProvider.notifier).postOrder();
+
+                          if(result) {
+                            context.goNamed(OrderDoneScreen.routeName);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('결제 실패'))
+                            );
+                          }
+                        },
                         child: Text(
                           '결제하기',
                           style: TextStyle(

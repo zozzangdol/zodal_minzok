@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:zodal_minzok/common/screen/root_tab.dart';
 import 'package:zodal_minzok/common/screen/splash_screen.dart';
 import 'package:zodal_minzok/common/security_storage/security_storage.dart';
+import 'package:zodal_minzok/order/view/order_done_screen.dart';
 import 'package:zodal_minzok/restaurant/view/basket_screen.dart';
 import 'package:zodal_minzok/restaurant/view/restaurant_detail_screen.dart';
 import 'package:zodal_minzok/user/model/user_model.dart';
@@ -52,6 +53,11 @@ class AuthProvider extends ChangeNotifier {
       path: '/basket',
       name: BasketScreen.routeName,
       builder: (_, __) => BasketScreen(),
+    ),
+    GoRoute(
+      path: '/order_done',
+      name: OrderDoneScreen.routeName,
+      builder: (_, __) => OrderDoneScreen(),
     ),
   ];
 
